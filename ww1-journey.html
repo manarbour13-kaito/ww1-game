@@ -1,0 +1,2130 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>رحلة عبر الحرب العالمية الأولى</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  /* ===================== CSS VARIABLES & RESET ===================== */
+  :root {
+    --bg-dark: #0d0a06;
+    --bg-mid: #1a1208;
+    --parchment: #c8a96e;
+    --parchment-light: #e8d5a3;
+    --parchment-dark: #8b6914;
+    --blood-red: #8b1a1a;
+    --blood-red-light: #c0392b;
+    --gold: #d4a017;
+    --gold-light: #f0c040;
+    --slate: #2c3e50;
+    --slate-light: #34495e;
+    --cream: #f5e6c8;
+    --smoke: #b0a090;
+    --forest: #2d4a22;
+    --navy: #1a2744;
+    --portal-glow: #4a90e2;
+    --correct: #27ae60;
+    --wrong: #c0392b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg-dark);
+    color: var(--cream);
+    overflow-x: hidden;
+    min-height: 100vh;
+    cursor: default;
+  }
+
+  /* ===================== SCENE SYSTEM ===================== */
+  .scene {
+    display: none;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+  .scene.active { display: flex; flex-direction: column; }
+
+  /* ===================== SCENE 1: INTRO PORTAL ===================== */
+  #scene-intro {
+    background: radial-gradient(ellipse at center, #1a0f05 0%, #0d0a06 60%, #000 100%);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .stars-bg {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(212,160,23,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 60%, rgba(212,160,23,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 15%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 45%, rgba(212,160,23,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 45% 90%, rgba(212,160,23,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 75%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(2px 2px at 70% 30%, rgba(212,160,23,0.7) 0%, transparent 100%),
+      radial-gradient(2px 2px at 25% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 55%, rgba(212,160,23,0.3) 0%, transparent 100%);
+  }
+
+  /* Ground silhouette */
+  .ground-silhouette {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 200px;
+    background: linear-gradient(to top, #0a0704 0%, transparent 100%);
+  }
+  .ground-silhouette::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 120px;
+    background: 
+      /* Castle/ruins silhouette using clip-path */
+      linear-gradient(to top, #0a0704, transparent);
+    clip-path: polygon(
+      0% 100%, 0% 60%, 3% 60%, 3% 40%, 6% 40%, 6% 55%, 8% 55%, 8% 35%, 11% 35%, 11% 55%,
+      13% 55%, 13% 45%, 16% 45%, 16% 60%, 20% 60%, 20% 70%, 25% 70%, 25% 50%, 28% 50%,
+      28% 30%, 30% 30%, 30% 50%, 33% 50%, 33% 65%, 40% 65%, 40% 75%, 50% 75%, 55% 65%,
+      60% 65%, 65% 70%, 70% 70%, 72% 55%, 75% 55%, 75% 40%, 77% 40%, 77% 55%, 80% 55%,
+      80% 60%, 83% 60%, 83% 45%, 86% 45%, 86% 60%, 90% 60%, 90% 70%, 95% 70%, 100% 65%, 100% 100%
+    );
+  }
+
+  /* Portal */
+  .portal-container {
+    position: relative;
+    width: 300px; height: 400px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 40px;
+    z-index: 10;
+  }
+
+  .portal-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    animation: portalRotate linear infinite;
+  }
+  .portal-ring:nth-child(1) {
+    width: 260px; height: 340px;
+    border-color: var(--gold) transparent var(--gold) transparent;
+    animation-duration: 4s;
+  }
+  .portal-ring:nth-child(2) {
+    width: 240px; height: 320px;
+    border-color: transparent var(--blood-red) transparent var(--blood-red);
+    animation-duration: 3s;
+    animation-direction: reverse;
+  }
+  .portal-ring:nth-child(3) {
+    width: 220px; height: 300px;
+    border-color: var(--parchment) transparent transparent var(--parchment);
+    animation-duration: 5s;
+  }
+
+  @keyframes portalRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .portal-inner {
+    width: 180px; height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, #0a2040 0%, #041020 50%, #000 100%);
+    border: 2px solid rgba(74, 144, 226, 0.5);
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow:
+      0 0 30px rgba(74, 144, 226, 0.4),
+      inset 0 0 30px rgba(74, 144, 226, 0.2);
+    animation: portalPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes portalPulse {
+    0%, 100% { box-shadow: 0 0 30px rgba(74,144,226,0.4), inset 0 0 30px rgba(74,144,226,0.2); }
+    50% { box-shadow: 0 0 60px rgba(74,144,226,0.8), inset 0 0 50px rgba(74,144,226,0.4); }
+  }
+
+  .portal-stars {
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(1px 1px at 20% 30%, white 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 70%, white 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 20%, white 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 50%, rgba(255,255,255,0.5) 0%, transparent 100%);
+    animation: starsMove 8s linear infinite;
+  }
+  @keyframes starsMove {
+    from { transform: translateY(0) rotate(0deg); }
+    to { transform: translateY(-20px) rotate(5deg); }
+  }
+
+  .portal-year {
+    font-family: 'Amiri', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    text-shadow: 0 0 20px rgba(240,192,64,0.8);
+    z-index: 2;
+    animation: yearGlow 2s ease-in-out infinite;
+  }
+  @keyframes yearGlow {
+    0%, 100% { text-shadow: 0 0 20px rgba(240,192,64,0.8); }
+    50% { text-shadow: 0 0 40px rgba(240,192,64,1), 0 0 60px rgba(212,160,23,0.5); }
+  }
+
+  /* Guide Character */
+  .guide-character {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .guide-avatar {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8b6914, #d4a017);
+    border: 3px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem;
+    box-shadow: 0 0 20px rgba(212,160,23,0.5);
+    animation: avatarFloat 3s ease-in-out infinite;
+  }
+  @keyframes avatarFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .speech-bubble {
+    background: linear-gradient(135deg, #f5e6c8, #e8d5a3);
+    color: #2c1810;
+    padding: 15px 20px;
+    border-radius: 15px;
+    max-width: 320px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    position: relative;
+    margin-top: 10px;
+    border: 2px solid var(--gold);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    animation: bubbleFadeIn 0.5s ease;
+  }
+  .speech-bubble::before {
+    content: '';
+    position: absolute;
+    top: -12px; left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom-color: var(--gold);
+  }
+  @keyframes bubbleFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .intro-title {
+    font-family: 'Amiri', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    text-align: center;
+    text-shadow: 0 0 20px rgba(212,160,23,0.6);
+    margin-bottom: 8px;
+    z-index: 10;
+  }
+  .intro-subtitle {
+    font-size: 1rem;
+    color: var(--smoke);
+    text-align: center;
+    margin-bottom: 30px;
+    z-index: 10;
+  }
+
+  /* ===================== BUTTONS ===================== */
+  .btn-primary {
+    background: linear-gradient(135deg, var(--blood-red), #6b1010);
+    color: var(--cream);
+    border: 2px solid var(--gold);
+    padding: 14px 40px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    z-index: 10;
+    letter-spacing: 1px;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(212,160,23,0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(139,26,26,0.6), 0 0 20px rgba(212,160,23,0.3);
+  }
+  .btn-primary:hover::before { opacity: 1; }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    background: linear-gradient(135deg, #2c3e50, #1a2744);
+    color: var(--parchment-light);
+    border: 1px solid var(--parchment-dark);
+    padding: 10px 24px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .btn-secondary:hover {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+    border-color: var(--gold);
+    color: var(--gold-light);
+    transform: translateY(-1px);
+  }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--parchment-dark));
+    color: #1a0f05;
+    border: none;
+    padding: 12px 30px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212,160,23,0.5);
+  }
+
+  .btn-nav {
+    background: rgba(44,62,80,0.8);
+    color: var(--parchment-light);
+    border: 1px solid rgba(212,160,23,0.4);
+    padding: 10px 20px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .btn-nav:hover { background: rgba(44,62,80,1); border-color: var(--gold); }
+  .btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* ===================== SCENE 2: ALLIANCES ===================== */
+  #scene-alliances {
+    background: linear-gradient(160deg, #1a1208 0%, #0d1520 60%, #0a0a0a 100%);
+    padding: 20px;
+  }
+
+  .scene-header {
+    text-align: center;
+    padding: 20px 0 10px;
+    border-bottom: 1px solid rgba(212,160,23,0.3);
+    margin-bottom: 20px;
+  }
+  .scene-header h2 {
+    font-family: 'Amiri', serif;
+    font-size: 2rem;
+    color: var(--gold-light);
+    text-shadow: 0 0 15px rgba(212,160,23,0.5);
+  }
+  .scene-header p { color: var(--smoke); font-size: 0.9rem; margin-top: 5px; }
+
+  .investigation-board {
+    background: 
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(139,105,20,0.15) 39px, rgba(139,105,20,0.15) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(139,105,20,0.1) 39px, rgba(139,105,20,0.1) 40px),
+      linear-gradient(135deg, #2a1f0f, #1a1208);
+    border: 2px solid rgba(139,105,20,0.5);
+    border-radius: 12px;
+    padding: 25px;
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  }
+
+  .board-title {
+    font-family: 'Amiri', serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed rgba(212,160,23,0.4);
+  }
+
+  .alliances-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .alliance-side {
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    padding: 15px;
+  }
+  .alliance-side.entente { border: 2px solid rgba(27,94,32,0.6); }
+  .alliance-side.central { border: 2px solid rgba(139,26,26,0.6); }
+
+  .alliance-name {
+    font-weight: 700;
+    font-size: 1rem;
+    text-align: center;
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+  }
+  .entente .alliance-name { background: rgba(27,94,32,0.4); color: #81c784; }
+  .central .alliance-name { background: rgba(139,26,26,0.4); color: #ef9a9a; }
+
+  .country-card {
+    background: linear-gradient(135deg, rgba(200,169,110,0.15), rgba(200,169,110,0.05));
+    border: 1px solid rgba(200,169,110,0.4);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+  }
+  .country-card:hover {
+    background: linear-gradient(135deg, rgba(212,160,23,0.25), rgba(212,160,23,0.1));
+    border-color: var(--gold);
+    transform: translateX(-3px);
+  }
+  .country-card.selected {
+    background: linear-gradient(135deg, rgba(212,160,23,0.3), rgba(212,160,23,0.15));
+    border-color: var(--gold-light);
+    box-shadow: 0 0 12px rgba(212,160,23,0.3);
+  }
+  .country-flag { font-size: 1.5rem; }
+  .country-info { flex: 1; }
+  .country-name { font-weight: 600; color: var(--parchment-light); }
+  .country-role { font-size: 0.75rem; color: var(--smoke); }
+
+  .alliance-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px 0;
+  }
+  .vs-text {
+    font-family: 'Amiri', serif;
+    font-size: 2rem;
+    color: var(--blood-red-light);
+    text-shadow: 0 0 10px rgba(192,57,43,0.5);
+  }
+  .alliance-arrow {
+    width: 40px; height: 40px;
+    border: 2px solid rgba(212,160,23,0.5);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+  }
+
+  .alliance-info-panel {
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(212,160,23,0.3);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 80px;
+    transition: all 0.3s ease;
+  }
+  .alliance-info-panel h4 { color: var(--gold); margin-bottom: 8px; font-size: 1rem; }
+  .alliance-info-panel p { color: var(--parchment-light); font-size: 0.88rem; line-height: 1.6; }
+
+  /* ===================== SCENE 3: TIMELINE MAP ===================== */
+  #scene-timeline {
+    background: linear-gradient(160deg, #0a1520 0%, #0d1a10 50%, #0a0f1a 100%);
+    padding: 20px;
+  }
+
+  .timeline-container {
+    max-width: 950px;
+    margin: 0 auto;
+  }
+
+  .map-area {
+    background: 
+      radial-gradient(ellipse at 40% 50%, rgba(27,60,19,0.3) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 30%, rgba(26,39,68,0.4) 0%, transparent 50%),
+      linear-gradient(135deg, #0a1208, #0d1520, #0a0f10);
+    border: 2px solid rgba(200,169,110,0.3);
+    border-radius: 15px;
+    padding: 20px;
+    position: relative;
+    min-height: 320px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  /* Simple Europe map SVG-based layout */
+  .europe-map {
+    width: 100%;
+    height: 280px;
+    position: relative;
+  }
+
+  .map-country {
+    position: absolute;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border: 1px solid rgba(255,255,255,0.2);
+    text-align: center;
+    padding: 4px;
+  }
+  .map-country .c-flag { font-size: 1.2rem; }
+  .map-country .c-name { font-size: 0.65rem; margin-top: 2px; }
+
+  .map-country.highlight-entente {
+    background: rgba(27,94,32,0.6) !important;
+    border-color: #4caf50 !important;
+    box-shadow: 0 0 20px rgba(76,175,80,0.6);
+    transform: scale(1.05);
+  }
+  .map-country.highlight-central {
+    background: rgba(139,26,26,0.7) !important;
+    border-color: #f44336 !important;
+    box-shadow: 0 0 20px rgba(244,67,54,0.6);
+    transform: scale(1.05);
+  }
+  .map-country.highlight-neutral {
+    background: rgba(100,100,20,0.5) !important;
+    border-color: #ffeb3b !important;
+    box-shadow: 0 0 15px rgba(255,235,59,0.4);
+  }
+  .map-country.highlight-battle {
+    background: rgba(200,50,20,0.8) !important;
+    border-color: #ff5722 !important;
+    box-shadow: 0 0 25px rgba(255,87,34,0.8);
+    animation: battlePulse 0.8s ease-in-out infinite;
+  }
+  @keyframes battlePulse {
+    0%, 100% { box-shadow: 0 0 25px rgba(255,87,34,0.8); }
+    50% { box-shadow: 0 0 45px rgba(255,87,34,1), 0 0 70px rgba(255,87,34,0.4); }
+  }
+
+  /* Map positions */
+  .mc-france   { top: 35%; left: 20%; width: 80px; height: 60px; background: rgba(26,39,68,0.4); }
+  .mc-germany  { top: 25%; left: 35%; width: 80px; height: 65px; background: rgba(60,30,20,0.4); }
+  .mc-uk       { top: 15%; left: 10%; width: 65px; height: 55px; background: rgba(26,39,68,0.4); }
+  .mc-russia   { top: 20%; left: 58%; width: 120px; height: 80px; background: rgba(60,30,20,0.4); }
+  .mc-austria  { top: 38%; left: 45%; width: 85px; height: 55px; background: rgba(60,30,20,0.4); }
+  .mc-ottoman  { top: 60%; left: 52%; width: 90px; height: 55px; background: rgba(80,40,10,0.4); }
+  .mc-italy    { top: 50%; left: 30%; width: 60px; height: 65px; background: rgba(26,39,68,0.3); }
+  .mc-belgium  { top: 20%; left: 25%; width: 55px; height: 40px; background: rgba(60,40,20,0.4); }
+  .mc-serbia   { top: 50%; left: 42%; width: 55px; height: 40px; background: rgba(26,39,68,0.4); }
+  .mc-usa      { top: 10%; left: 2%; width: 55px; height: 45px; background: rgba(20,40,80,0.3); }
+
+  /* Event card */
+  .event-card {
+    background: linear-gradient(135deg, rgba(26,18,8,0.95), rgba(13,10,6,0.98));
+    border: 1px solid rgba(212,160,23,0.4);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    position: relative;
+    overflow: hidden;
+    animation: cardSlideIn 0.4s ease;
+  }
+  @keyframes cardSlideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .event-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 4px; height: 100%;
+    background: var(--gold);
+  }
+
+  .event-year-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--blood-red), #6b1010);
+    color: var(--gold-light);
+    font-family: 'Amiri', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 4px 15px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    border: 1px solid var(--gold);
+  }
+
+  .event-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--parchment-light);
+    margin-bottom: 8px;
+  }
+  .event-icon { font-size: 1.5rem; margin-left: 8px; }
+
+  .event-description {
+    color: var(--smoke);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    margin-bottom: 15px;
+  }
+
+  .event-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .timeline-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(212,160,23,0.2);
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+
+  .event-progress {
+    display: flex; gap: 6px; align-items: center;
+  }
+  .progress-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(212,160,23,0.25);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .progress-dot.active {
+    background: var(--gold);
+    box-shadow: 0 0 8px rgba(212,160,23,0.6);
+    transform: scale(1.3);
+  }
+  .progress-dot.done { background: rgba(212,160,23,0.5); }
+
+  /* Modal / Popup */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal-box {
+    background: linear-gradient(135deg, #1a1208, #0d0a06);
+    border: 2px solid rgba(212,160,23,0.5);
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    animation: modalIn 0.3s ease;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-title {
+    font-family: 'Amiri', serif;
+    font-size: 1.4rem;
+    color: var(--gold-light);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(212,160,23,0.3);
+  }
+  .modal-content { color: var(--parchment-light); font-size: 0.9rem; line-height: 1.8; }
+  .modal-close {
+    position: absolute; top: 15px; left: 15px;
+    background: rgba(139,26,26,0.6);
+    color: var(--cream);
+    border: 1px solid rgba(212,160,23,0.4);
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { background: var(--blood-red); }
+
+  /* ===================== SCENE 4: SUMMARY ===================== */
+  #scene-summary {
+    background: linear-gradient(160deg, #0a0f05 0%, #0d1208 50%, #050a15 100%);
+    padding: 20px;
+    align-items: center;
+  }
+
+  .summary-content {
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .summary-header {
+    position: relative;
+    margin-bottom: 30px;
+  }
+
+  .peace-animation {
+    font-size: 4rem;
+    animation: peacePulse 2s ease-in-out infinite;
+    display: block;
+    margin: 0 auto 15px;
+  }
+  @keyframes peacePulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); }
+    50% { transform: scale(1.1); filter: drop-shadow(0 0 25px rgba(255,255,255,0.6)); }
+  }
+
+  .summary-title {
+    font-family: 'Amiri', serif;
+    font-size: 2.2rem;
+    color: var(--gold-light);
+    text-shadow: 0 0 20px rgba(212,160,23,0.5);
+    margin-bottom: 8px;
+  }
+
+  .treaty-image-container {
+    margin: 25px auto;
+    max-width: 500px;
+    border: 3px solid var(--gold);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(212,160,23,0.4), 0 20px 60px rgba(0,0,0,0.6);
+    position: relative;
+  }
+  .treaty-image-container img {
+    width: 100%;
+    display: block;
+  }
+  .treaty-image-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    padding: 20px 15px 12px;
+    font-family: 'Amiri', serif;
+    font-size: 1rem;
+    color: var(--gold-light);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+  }
+
+  .treaty-placeholder {
+    width: 100%;
+    height: 280px;
+    background: linear-gradient(135deg, #1a1208, #0d0a06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+  }
+  .treaty-placeholder .seal { font-size: 3rem; }
+  .treaty-placeholder p { color: var(--smoke); font-size: 0.9rem; }
+
+  .consequences-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 25px 0;
+    text-align: right;
+  }
+
+  .consequence-card {
+    background: linear-gradient(135deg, rgba(26,18,8,0.8), rgba(13,10,6,0.9));
+    border: 1px solid rgba(212,160,23,0.3);
+    border-radius: 10px;
+    padding: 15px;
+    transition: all 0.3s ease;
+  }
+  .consequence-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  }
+  .consequence-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+  .consequence-title { font-weight: 700; color: var(--gold); margin-bottom: 6px; font-size: 0.95rem; }
+  .consequence-text { color: var(--smoke); font-size: 0.82rem; line-height: 1.6; }
+
+  /* Stat numbers */
+  .war-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+  .stat-item { text-align: center; }
+  .stat-number {
+    font-family: 'Amiri', serif;
+    font-size: 2rem;
+    color: var(--blood-red-light);
+    font-weight: 700;
+    display: block;
+    text-shadow: 0 0 10px rgba(192,57,43,0.5);
+  }
+  .stat-label { font-size: 0.78rem; color: var(--smoke); }
+
+  /* ===================== SCENE 5: QUIZ ===================== */
+  #scene-quiz {
+    background: linear-gradient(160deg, #0a0f1a 0%, #0d1208 100%);
+    padding: 20px;
+  }
+
+  .quiz-container { max-width: 700px; margin: 0 auto; }
+
+  .quiz-score-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(212,160,23,0.3);
+    border-radius: 8px;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+  }
+  .score-display {
+    font-size: 1rem;
+    color: var(--gold-light);
+    font-weight: 700;
+  }
+  .quiz-progress-text { color: var(--smoke); font-size: 0.85rem; }
+
+  .quiz-card {
+    background: linear-gradient(135deg, rgba(26,18,8,0.95), rgba(13,10,6,0.98));
+    border: 2px solid rgba(212,160,23,0.4);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 20px;
+    animation: cardSlideIn 0.4s ease;
+  }
+
+  .quiz-type-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+  }
+  .badge-tf { background: rgba(74,144,226,0.3); color: #90caf9; border: 1px solid rgba(74,144,226,0.5); }
+  .badge-mc { background: rgba(156,39,176,0.3); color: #ce93d8; border: 1px solid rgba(156,39,176,0.5); }
+
+  .quiz-question {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--parchment-light);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+
+  .quiz-option {
+    background: rgba(44,62,80,0.5);
+    border: 1px solid rgba(200,169,110,0.3);
+    color: var(--parchment-light);
+    padding: 12px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    text-align: right;
+    transition: all 0.25s ease;
+    width: 100%;
+  }
+  .quiz-option:hover:not(:disabled) {
+    background: rgba(44,62,80,0.9);
+    border-color: var(--gold);
+    transform: translateX(-3px);
+  }
+  .quiz-option.correct {
+    background: rgba(27,94,32,0.5);
+    border-color: #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 0 15px rgba(76,175,80,0.3);
+  }
+  .quiz-option.wrong {
+    background: rgba(139,26,26,0.5);
+    border-color: #f44336;
+    color: #ef9a9a;
+    box-shadow: 0 0 15px rgba(244,67,54,0.3);
+  }
+  .quiz-option:disabled { cursor: not-allowed; }
+
+  .quiz-tf-buttons { display: flex; gap: 15px; justify-content: center; }
+  .btn-true, .btn-false {
+    padding: 12px 35px;
+    border-radius: 8px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: 2px solid;
+  }
+  .btn-true { background: rgba(27,94,32,0.4); color: #a5d6a7; border-color: #4caf50; }
+  .btn-true:hover { background: rgba(27,94,32,0.7); transform: translateY(-2px); }
+  .btn-false { background: rgba(139,26,26,0.4); color: #ef9a9a; border-color: #f44336; }
+  .btn-false:hover { background: rgba(139,26,26,0.7); transform: translateY(-2px); }
+
+  .quiz-feedback {
+    margin-top: 15px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; animation: feedbackIn 0.4s ease; }
+  @keyframes feedbackIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .quiz-feedback.correct-fb { background: rgba(27,94,32,0.3); border: 1px solid #4caf50; color: #a5d6a7; }
+  .quiz-feedback.wrong-fb { background: rgba(139,26,26,0.3); border: 1px solid #f44336; color: #ef9a9a; }
+
+  .quiz-result {
+    text-align: center;
+    padding: 30px;
+    animation: fadeIn 0.5s ease;
+  }
+  .result-emoji { font-size: 4rem; margin-bottom: 15px; display: block; }
+  .result-title {
+    font-family: 'Amiri', serif;
+    font-size: 2rem;
+    color: var(--gold-light);
+    margin-bottom: 10px;
+  }
+  .result-score {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--blood-red-light);
+    display: block;
+    margin: 15px 0;
+  }
+
+  /* ===================== SCENE 6: DECISION MAKER ===================== */
+  #scene-decision {
+    background: linear-gradient(160deg, #0f0a05 0%, #0a1520 100%);
+    padding: 20px;
+  }
+
+  .decision-container { max-width: 750px; margin: 0 auto; }
+
+  .decision-scenario {
+    background: linear-gradient(135deg, rgba(26,18,8,0.95), rgba(13,10,6,0.98));
+    border: 2px solid rgba(212,160,23,0.4);
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 20px;
+    animation: cardSlideIn 0.4s ease;
+  }
+
+  .scenario-context {
+    background: rgba(0,0,0,0.3);
+    border-right: 3px solid var(--gold);
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border-radius: 0 8px 8px 0;
+    color: var(--smoke);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .scenario-question {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--parchment-light);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .decision-options { display: flex; flex-direction: column; gap: 12px; }
+
+  .decision-option {
+    background: linear-gradient(135deg, rgba(44,62,80,0.5), rgba(26,39,68,0.5));
+    border: 1px solid rgba(200,169,110,0.3);
+    border-radius: 10px;
+    padding: 15px 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: right;
+  }
+  .decision-option:hover {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(44,62,80,0.8), rgba(26,39,68,0.8));
+    transform: translateX(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+  .decision-option-title { font-weight: 700; color: var(--parchment-light); margin-bottom: 4px; }
+  .decision-option-hint { font-size: 0.78rem; color: var(--smoke); }
+
+  .decision-outcome {
+    background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(13,10,6,0.9));
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    padding: 20px;
+    display: none;
+    animation: fadeIn 0.5s ease;
+  }
+  .decision-outcome.show { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .outcome-title { font-family: 'Amiri', serif; font-size: 1.3rem; color: var(--gold-light); margin-bottom: 12px; }
+  .outcome-text { color: var(--parchment-light); font-size: 0.9rem; line-height: 1.8; margin-bottom: 12px; }
+  .historical-note {
+    background: rgba(212,160,23,0.1);
+    border: 1px solid rgba(212,160,23,0.3);
+    border-radius: 8px;
+    padding: 12px;
+    color: var(--gold);
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+  .historical-note strong { color: var(--gold-light); }
+
+  /* ===================== NAVIGATION BAR ===================== */
+  .main-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(13,10,6,0.97), rgba(13,10,6,0.85));
+    border-top: 1px solid rgba(212,160,23,0.3);
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    padding: 10px 15px;
+    z-index: 500;
+    backdrop-filter: blur(10px);
+    flex-wrap: wrap;
+  }
+
+  .nav-btn {
+    background: none;
+    border: 1px solid rgba(212,160,23,0.25);
+    color: var(--smoke);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .nav-btn:hover { border-color: var(--gold); color: var(--gold-light); }
+  .nav-btn.active { background: rgba(212,160,23,0.2); border-color: var(--gold); color: var(--gold-light); font-weight: 700; }
+
+  /* ===================== SECTION PADDING ===================== */
+  .scene { padding-bottom: 80px; }
+
+  /* ===================== MISC ===================== */
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(212,160,23,0.2);
+    margin: 20px 0;
+  }
+
+  .badge-new {
+    display: inline-block;
+    background: var(--blood-red);
+    color: var(--cream);
+    font-size: 0.65rem;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-right: 6px;
+    vertical-align: middle;
+    font-weight: 700;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-dark); }
+  ::-webkit-scrollbar-thumb { background: rgba(212,160,23,0.4); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 640px) {
+    .alliances-grid { grid-template-columns: 1fr; }
+    .alliance-divider { flex-direction: row; padding: 10px 0; }
+    .mc-usa { display: none; }
+    .portal-container { width: 220px; height: 300px; }
+    .portal-ring:nth-child(1) { width: 190px; height: 250px; }
+    .portal-ring:nth-child(2) { width: 170px; height: 230px; }
+    .portal-ring:nth-child(3) { width: 150px; height: 210px; }
+    .portal-inner { width: 120px; height: 160px; }
+    .intro-title { font-size: 1.5rem; }
+    .summary-title { font-size: 1.5rem; }
+    .nav-btn { font-size: 0.7rem; padding: 6px 10px; }
+    .europe-map { height: 200px; }
+    .map-country { font-size: 0.55rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== SCENE 1: INTRO ==================== -->
+<div id="scene-intro" class="scene active">
+  <div class="stars-bg"></div>
+  <div class="ground-silhouette"></div>
+
+  <div style="z-index:10;display:flex;flex-direction:column;align-items:center;padding:30px 20px 0;">
+    <div class="intro-title">🌍 رحلة عبر التاريخ</div>
+    <div class="intro-subtitle">تجربة تعليمية تفاعلية للصف الثانوي</div>
+
+    <div class="portal-container">
+      <div class="portal-ring"></div>
+      <div class="portal-ring"></div>
+      <div class="portal-ring"></div>
+      <div class="portal-inner">
+        <div class="portal-stars"></div>
+        <div class="portal-year">١٩١٤</div>
+      </div>
+    </div>
+
+    <div class="guide-character">
+      <div class="guide-avatar">👨‍🎓</div>
+      <div class="speech-bubble" id="intro-bubble">
+        مرحبًا! أنا مرشدك في رحلة التاريخ! 👋
+      </div>
+    </div>
+
+    <button class="btn-primary" id="start-btn" style="margin-top:20px;" onclick="startJourney()">
+      🚀 ابدأ الرحلة
+    </button>
+  </div>
+</div>
+
+<!-- ==================== SCENE 2: ALLIANCES ==================== -->
+<div id="scene-alliances" class="scene">
+  <div class="scene-header">
+    <h2>🕵️ غرفة التحقيق — الأحلاف العسكرية</h2>
+    <p>اكتشف كيف تشكّلت التحالفات التي أشعلت فتيل الحرب</p>
+  </div>
+
+  <div style="padding: 0 15px; max-width:950px;margin:0 auto;width:100%;">
+    <div class="investigation-board">
+      <div class="board-title">🗂️ لوحة التحقيق — أحلاف ما قبل الحرب</div>
+      
+      <div class="alliances-grid">
+        <!-- Entente side -->
+        <div class="alliance-side entente">
+          <div class="alliance-name">🟢 التحالف الثلاثي (الوفاق)</div>
+          <div class="country-card" onclick="showAllianceInfo('france')">
+            <div class="country-flag">🇫🇷</div>
+            <div class="country-info">
+              <div class="country-name">فرنسا</div>
+              <div class="country-role">قوة عسكرية كبرى — تسعى لاسترداد الألزاس</div>
+            </div>
+          </div>
+          <div class="country-card" onclick="showAllianceInfo('russia')">
+            <div class="country-flag">🇷🇺</div>
+            <div class="country-info">
+              <div class="country-name">روسيا القيصرية</div>
+              <div class="country-role">حماية السلاف — التوسع نحو البلقان</div>
+            </div>
+          </div>
+          <div class="country-card" onclick="showAllianceInfo('uk')">
+            <div class="country-flag">🇬🇧</div>
+            <div class="country-info">
+              <div class="country-name">المملكة المتحدة</div>
+              <div class="country-role">انضمت 1914 — حماية بلجيكا وتوازن القوى</div>
+            </div>
+          </div>
+          <div class="country-card" onclick="showAllianceInfo('serbia')">
+            <div class="country-flag">🇷🇸</div>
+            <div class="country-info">
+              <div class="country-name">صربيا</div>
+              <div class="country-role">شرارة الحرب — مدعومة من روسيا</div>
+            </div>
+          </div>
+          <div class="country-card" onclick="showAllianceInfo('italy2')">
+            <div class="country-flag">🇮🇹</div>
+            <div class="country-info">
+              <div class="country-name">إيطاليا (1915)</div>
+              <div class="country-role">انضمت للوفاق رغم تحالفها السابق</div>
+            </div>
+          </div>
+          <div class="country-card" onclick="showAllianceInfo('usa')">
+            <div class="country-flag">🇺🇸</div>
+            <div class="country-info">
+              <div class="country-name">الولايات المتحدة (1917)</div>
+              <div class="country-role">دخلت متأخرة — نقطة التحول الحاسمة</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="alliance-divider">
+          <div class="vs-text">⚔️</div>
+          <div class="alliance-arrow">🔥</div>
+          <div style="color:var(--smoke);font-size:0.75rem;text-align:center;writing-mode:vertical-rl;">حرب عالمية</div>
+          <div class="alliance-arrow">🔥</div>
+        </div>
+
+        <!-- Central powers -->
+        <div class="alliance-side central">
+          <div class="alliance-name">🔴 دول المحور (التحالف)</div>
+          <div class="country-card" onclick="showAllianceInfo('germany')">
+            <div class="country-flag">🇩🇪</div>
+            <div class="country-info">
+              <div class="country-name">ألمانيا</div>
+              <div class="country-role">القوة المحرّكة — خطة شليفن الهجومية</div>
+            </div>
+          </div>
+          <div class="country-card" onclick="showAllianceInfo('austria')">
+            <div class="country-flag">🇦🇹</div>
+            <div class="country-info">
+              <div class="country-name">النمسا-المجر</div>
+              <div class="country-role">إعلان الحرب على صربيا — بداية التصعيد</div>
+            </div>
+          </div>
+          <div class="country-card" onclick="showAllianceInfo('ottoman')">
+            <div class="country-flag">🇹🇷</div>
+            <div class="country-info">
+              <div class="country-name">الدولة العثمانية</div>
+              <div class="country-role">انضمت لإعادة السيطرة على المنطقة</div>
+            </div>
+          </div>
+          <div class="country-card" onclick="showAllianceInfo('bulgaria')">
+            <div class="country-flag">🇧🇬</div>
+            <div class="country-info">
+              <div class="country-name">بلغاريا (1915)</div>
+              <div class="country-role">طامعة في أراضي البلقان</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alliance-info-panel" id="alliance-info">
+        <h4>👆 انقر على أي دولة لمعرفة تفاصيل دورها في الحرب</h4>
+        <p>كل دولة دخلت الحرب لأسباب مختلفة — من المصالح القومية إلى الاتفاقيات السرية والطموحات التوسعية.</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:20px;">
+      <button class="btn-primary" onclick="goToScene('scene-timeline')">
+        🗺️ انتقل إلى خريطة الأحداث ←
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCENE 3: TIMELINE ==================== -->
+<div id="scene-timeline" class="scene">
+  <div class="scene-header">
+    <h2>🗺️ الخريطة التفاعلية — أحداث الحرب</h2>
+    <p>تنقّل بين أبرز أحداث الحرب العالمية الأولى</p>
+  </div>
+
+  <div style="padding:0 15px;" class="timeline-container">
+    <!-- Europe Map -->
+    <div class="map-area">
+      <div class="europe-map" id="europe-map">
+        <div class="map-country mc-uk" id="mc-uk">
+          <span class="c-flag">🇬🇧</span>
+          <span class="c-name">بريطانيا</span>
+        </div>
+        <div class="map-country mc-france" id="mc-france">
+          <span class="c-flag">🇫🇷</span>
+          <span class="c-name">فرنسا</span>
+        </div>
+        <div class="map-country mc-belgium" id="mc-belgium">
+          <span class="c-flag">🇧🇪</span>
+          <span class="c-name">بلجيكا</span>
+        </div>
+        <div class="map-country mc-germany" id="mc-germany">
+          <span class="c-flag">🇩🇪</span>
+          <span class="c-name">ألمانيا</span>
+        </div>
+        <div class="map-country mc-austria" id="mc-austria">
+          <span class="c-flag">🇦🇹</span>
+          <span class="c-name">النمسا</span>
+        </div>
+        <div class="map-country mc-russia" id="mc-russia">
+          <span class="c-flag">🇷🇺</span>
+          <span class="c-name">روسيا</span>
+        </div>
+        <div class="map-country mc-ottoman" id="mc-ottoman">
+          <span class="c-flag">🇹🇷</span>
+          <span class="c-name">العثمانيون</span>
+        </div>
+        <div class="map-country mc-italy" id="mc-italy">
+          <span class="c-flag">🇮🇹</span>
+          <span class="c-name">إيطاليا</span>
+        </div>
+        <div class="map-country mc-serbia" id="mc-serbia">
+          <span class="c-flag">🇷🇸</span>
+          <span class="c-name">صربيا</span>
+        </div>
+        <div class="map-country mc-usa" id="mc-usa">
+          <span class="c-flag">🇺🇸</span>
+          <span class="c-name">أمريكا</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event card -->
+    <div class="event-card" id="event-card">
+      <div id="event-year-badge" class="event-year-badge">1914</div>
+      <div class="event-title" id="event-title">
+        <span class="event-icon" id="event-icon">🔫</span>
+        <span id="event-title-text">اغتيال ولي العهد النمساوي</span>
+      </div>
+      <div class="event-description" id="event-desc">
+        في 28 يونيو 1914، اغتيل الأرشيدوق فرانز فرديناند ولي عهد النمسا في سراييفو على يد غافريلو برينسيب الصربي القومي. هذه الجريمة كانت الشرارة التي أشعلت أكبر حرب شهدها العالم حتى ذلك الحين.
+      </div>
+      <div class="event-actions">
+        <button class="btn-secondary" onclick="showEventHow()">❓ كيف حدث؟</button>
+        <button class="btn-secondary" onclick="showEventWhy()">⚡ لماذا كان مهمًا؟</button>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="timeline-nav">
+      <button class="btn-nav" id="prev-btn" onclick="prevEvent()" disabled>◀ السابق</button>
+      <div class="event-progress" id="event-progress"></div>
+      <button class="btn-nav" id="next-btn" onclick="nextEvent()">التالي ▶</button>
+    </div>
+
+    <div style="text-align:center;margin-top:20px;">
+      <button class="btn-primary" onclick="goToScene('scene-summary')">
+        📜 انتقل إلى الخلاصة ←
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCENE 4: SUMMARY ==================== -->
+<div id="scene-summary" class="scene">
+  <div class="summary-content" style="padding:20px;">
+    <div class="summary-header">
+      <span class="peace-animation">🕊️</span>
+      <div class="summary-title">نهاية الحرب وإرث السلام المكسور</div>
+      <p style="color:var(--smoke);font-size:0.9rem;">11 نوفمبر 1918 — توقّفت المدافع، وبدأت مرحلة جديدة من التاريخ</p>
+    </div>
+
+    <!-- War stats -->
+    <div class="war-stats">
+      <div class="stat-item">
+        <span class="stat-number">20M</span>
+        <span class="stat-label">شهيد وجريح مدني</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">17M</span>
+        <span class="stat-label">ضحايا عسكريون</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">4</span>
+        <span class="stat-label">إمبراطوريات انهارت</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">1919</span>
+        <span class="stat-label">معاهدة فرساي</span>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Treaty of Versailles image -->
+    <h3 style="font-family:'Amiri',serif;color:var(--gold-light);font-size:1.4rem;margin-bottom:15px;">
+      📜 معاهدة فرساي — 1919
+    </h3>
+
+    <div class="treaty-image-container" id="treaty-container">
+      <!-- Placeholder shown if no image uploaded -->
+      <div class="treaty-placeholder" id="treaty-placeholder">
+        <span class="seal">🏛️</span>
+        <p style="font-family:'Amiri',serif;font-size:1.1rem;color:var(--gold-light);">معاهدة فرساي</p>
+        <p>28 يونيو 1919 — قصر فرساي، فرنسا</p>
+        <p style="font-size:0.8rem;color:rgba(176,160,144,0.6);">
+          ضع صورة "معاهدة فيراسي" هنا عن طريق الكود
+        </p>
+      </div>
+      <div class="treaty-image-label">معاهدة فرساي — توقيع الصلح في قصر فرساي، فرنسا، 28 يونيو 1919</div>
+    </div>
+
+    <p style="color:var(--smoke);font-size:0.85rem;margin:10px 0 20px;text-align:center;">
+      فرضت المعاهدة على ألمانيا تعويضات ضخمة وخسارة أراضٍ ومحدودية عسكرية — مما زرع بذور الحرب العالمية الثانية
+    </p>
+
+    <!-- Consequences -->
+    <h3 style="font-family:'Amiri',serif;color:var(--gold-light);font-size:1.3rem;margin-bottom:15px;text-align:right;">
+      ⚡ تداعيات الحرب
+    </h3>
+    <div class="consequences-grid">
+      <div class="consequence-card">
+        <span class="consequence-icon">🏚️</span>
+        <div class="consequence-title">انهيار الإمبراطوريات</div>
+        <div class="consequence-text">سقوط الإمبراطوريات العثمانية والنمساوية والروسية والألمانية — ورسم خريطة جديدة للعالم</div>
+      </div>
+      <div class="consequence-card">
+        <span class="consequence-icon">🌍</span>
+        <div class="consequence-title">إعادة رسم الحدود</div>
+        <div class="consequence-text">نشأت دول جديدة وأُعيد توزيع المستعمرات، مما خلق توترات لا تزال قائمة حتى اليوم</div>
+      </div>
+      <div class="consequence-card">
+        <span class="consequence-icon">😤</span>
+        <div class="consequence-title">الغضب الألماني</div>
+        <div class="consequence-text">أذلّت المعاهدة ألمانيا وفرضت عليها ذنب الحرب، ما مهّد الطريق لصعود النازية</div>
+      </div>
+      <div class="consequence-card">
+        <span class="consequence-icon">🕊️</span>
+        <div class="consequence-title">عصبة الأمم</div>
+        <div class="consequence-text">أُسّست لمنع الحروب المستقبلية، لكنها فشلت في تحقيق هذا الهدف — ومن رحمها وُلدت الأمم المتحدة</div>
+      </div>
+      <div class="consequence-card">
+        <span class="consequence-icon">💥</span>
+        <div class="consequence-title">بذور الحرب القادمة</div>
+        <div class="consequence-text">القسوة في معاهدة فرساي كانت السبب الرئيسي لاندلاع الحرب العالمية الثانية بعد 20 عامًا</div>
+      </div>
+      <div class="consequence-card">
+        <span class="consequence-icon">🌐</span>
+        <div class="consequence-title">عالم ما بعد الحرب</div>
+        <div class="consequence-text">نهاية عصر الإمبراطوريات الكبرى وبداية القرن الأمريكي — تحوّل جذري في موازين القوى العالمية</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:25px;display:flex;gap:15px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn-primary" onclick="goToScene('scene-quiz')">
+        🧪 اختبر معلوماتك ←
+      </button>
+      <button class="btn-gold" onclick="goToScene('scene-decision')">
+        🎮 لعبة صانع القرار
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCENE 5: QUIZ ==================== -->
+<div id="scene-quiz" class="scene">
+  <div class="scene-header">
+    <h2>🧪 اختبار المعلومات</h2>
+    <p>اختبر ما تعلّمته في رحلتك عبر التاريخ</p>
+  </div>
+
+  <div style="padding:0 15px;" class="quiz-container">
+    <div class="quiz-score-bar">
+      <div class="score-display">🏆 النقاط: <span id="quiz-score">0</span></div>
+      <div class="quiz-progress-text">سؤال <span id="quiz-current">1</span> من <span id="quiz-total">8</span></div>
+    </div>
+
+    <div id="quiz-question-area"></div>
+    <div id="quiz-result-area" style="display:none;"></div>
+
+    <div style="text-align:center;margin-top:15px;" id="quiz-next-btn-area" style="display:none;">
+      <button class="btn-primary" id="quiz-next-btn" onclick="nextQuizQuestion()" style="display:none;">
+        السؤال التالي ←
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCENE 6: DECISION MAKER ==================== -->
+<div id="scene-decision" class="scene">
+  <div class="scene-header">
+    <h2>🎮 أنت صانع القرار</h2>
+    <p>اتّخذ قرارات تاريخية وشاهد تأثيرها على مجرى الأحداث</p>
+  </div>
+
+  <div style="padding:0 15px;" class="decision-container">
+    <div id="decision-scenario-area"></div>
+    <div id="decision-outcome-area" class="decision-outcome"></div>
+
+    <div style="text-align:center;margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" id="decision-nav">
+      <button class="btn-secondary" id="decision-prev" onclick="prevDecision()" style="display:none;">◀ القرار السابق</button>
+      <button class="btn-gold" id="decision-next" onclick="nextDecision()" style="display:none;">القرار التالي ▶</button>
+      <button class="btn-primary" id="decision-restart" onclick="restartDecision()" style="display:none;">🔄 إعادة اللعب</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL ==================== -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modal-title">العنوان</div>
+    <div class="modal-content" id="modal-content">المحتوى</div>
+  </div>
+</div>
+
+<!-- ==================== NAVIGATION BAR ==================== -->
+<div class="main-nav" id="main-nav" style="display:none;">
+  <button class="nav-btn" onclick="goToScene('scene-intro')" id="nav-intro">🌍 البداية</button>
+  <button class="nav-btn" onclick="goToScene('scene-alliances')" id="nav-alliances">🕵️ الأحلاف</button>
+  <button class="nav-btn" onclick="goToScene('scene-timeline')" id="nav-timeline">🗺️ الأحداث</button>
+  <button class="nav-btn" onclick="goToScene('scene-summary')" id="nav-summary">📜 الخلاصة</button>
+  <button class="nav-btn" onclick="goToScene('scene-quiz')" id="nav-quiz">🧪 الاختبار</button>
+  <button class="nav-btn" onclick="goToScene('scene-decision')" id="nav-decision">🎮 القرار</button>
+</div>
+
+<script>
+// ===================== SCENE MANAGEMENT =====================
+let currentScene = 'scene-intro';
+
+function goToScene(sceneId) {
+  document.querySelector(`#${currentScene}`).classList.remove('active');
+  document.querySelector(`#${sceneId}`).classList.add('active');
+  currentScene = sceneId;
+  window.scrollTo(0, 0);
+  updateNav();
+
+  // Special init for scenes
+  if (sceneId === 'scene-timeline') initTimeline();
+  if (sceneId === 'scene-quiz') initQuiz();
+  if (sceneId === 'scene-decision') initDecision();
+}
+
+function updateNav() {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const map = {
+    'scene-intro':'nav-intro','scene-alliances':'nav-alliances',
+    'scene-timeline':'nav-timeline','scene-summary':'nav-summary',
+    'scene-quiz':'nav-quiz','scene-decision':'nav-decision'
+  };
+  const id = map[currentScene];
+  if (id) document.getElementById(id)?.classList.add('active');
+}
+
+// ===================== INTRO =====================
+const introBubbles = [
+  "مرحبًا! أنا مرشدك في رحلة التاريخ! 👋",
+  "هل أنت مستعد لاستكشاف الحرب العالمية الأولى؟ 🌍",
+  "ستتخذ قرارات حقيقية وترى تأثيرها على التاريخ! ⚡"
+];
+let bubbleIndex = 0;
+
+function startJourney() {
+  bubbleIndex = (bubbleIndex + 1) % introBubbles.length;
+  if (bubbleIndex === 0) {
+    document.getElementById('main-nav').style.display = 'flex';
+    goToScene('scene-alliances');
+    return;
+  }
+  const bubble = document.getElementById('intro-bubble');
+  bubble.style.animation = 'none';
+  bubble.offsetHeight;
+  bubble.style.animation = 'bubbleFadeIn 0.5s ease';
+  bubble.textContent = introBubbles[bubbleIndex];
+
+  if (bubbleIndex === introBubbles.length - 1) {
+    document.getElementById('start-btn').textContent = '🚀 لنبدأ!';
+  }
+}
+
+// ===================== ALLIANCES =====================
+const allianceData = {
+  france: {
+    title: '🇫🇷 فرنسا — الانتقام والكرامة',
+    text: 'خسرت فرنسا الألزاس واللورين لألمانيا في حرب 1870. لذا سعت لبناء تحالف قوي مع روسيا وبريطانيا لمواجهة الهيمنة الألمانية. وقّعت اتفاقية الوفاق الودي مع بريطانيا عام 1904 والحلف الفرنسي-الروسي عام 1894.'
+  },
+  russia: {
+    title: '🇷🇺 روسيا — حماية الأخوة السلافية',
+    text: 'رأت روسيا نفسها حامية الشعوب السلافية في البلقان. عندما أعلنت النمسا الحرب على صربيا، حشدت روسيا جيشها دفاعًا عن صربيا، مما جرّ معها فرنسا وبريطانيا إلى الحرب.'
+  },
+  uk: {
+    title: '🇬🇧 بريطانيا — الحياد المنتهي',
+    text: 'كانت بريطانيا تحاول تجنّب التورط، لكن اجتياح ألمانيا لبلجيكا المحايدة أجبرها على الدخول. كانت بريطانيا قد ضمنت سلامة بلجيكا بموجب معاهدة 1839، فإعلان الحرب كان ضرورة شرفية وقانونية.'
+  },
+  serbia: {
+    title: '🇷🇸 صربيا — الشرارة الأولى',
+    text: 'اغتيل ولي العهد النمساوي في سراييفو على يد قومي صربي من جمعية "اليد السوداء". رفضت صربيا الإذعان للإنذار النمساوي بشكل كامل، مما أدى إلى إعلان الحرب عليها في 28 يوليو 1914.'
+  },
+  italy2: {
+    title: '🇮🇹 إيطاليا — تغيير الجانب',
+    text: 'رغم انتمائها الأصلي لدول المحور، دخلت إيطاليا الحرب عام 1915 إلى جانب دول الوفاق. السبب؟ وعدتها بريطانيا وفرنسا بالحصول على أراضٍ في أعقاب النصر، بما فيها مناطق من النمسا والأراضي العثمانية.'
+  },
+  usa: {
+    title: '🇺🇸 الولايات المتحدة — نقطة التحوّل',
+    text: 'ظلّت أمريكا محايدة حتى 1917. لكن ثلاثة أسباب دفعتها للدخول: الحرب المغمارية الألمانية (إغراق السفن المدنية)، ومؤامرة زيمرمان (محاولة ألمانيا تحريض المكسيك)، والتعاطف مع الديمقراطيات الأوروبية. أرسلت الملايين من الجنود.'
+  },
+  germany: {
+    title: '🇩🇪 ألمانيا — القوة الصاعدة',
+    text: 'رأت ألمانيا في إعلان روسيا التعبئة العامة تهديدًا مباشرًا. نفّذت خطة شليفن: ضرب فرنسا سريعًا من الغرب عبر بلجيكا، ثم التفرغ لروسيا في الشرق. لكن الخطة فشلت عند نهر المارن، وبدأت حرب الخنادق المستنزفة.'
+  },
+  austria: {
+    title: '🇦🇹 النمسا-المجر — من أرادت العقاب',
+    text: 'استغلّت اغتيال فرانز فرديناند لسحق القومية الصربية التي كانت تهدد تماسك الإمبراطورية. أرسلت إنذارًا مهينًا لصربيا عرفت أنها سترفضه، وأعلنت الحرب في 28 يوليو 1914 — مشعلةً الفتيل الذي أحرق العالم.'
+  },
+  ottoman: {
+    title: '🇹🇷 الدولة العثمانية — رهان على النهوض',
+    text: 'شهدت الإمبراطورية العثمانية تراجعًا مستمرًا وفقدان أراضٍ. رأت في الانضمام لألمانيا فرصة لاسترداد مناطق مفقودة ومواجهة روسيا. لكن المراهنة فشلت، وكانت نهاية الحرب بداية تفكك الإمبراطورية العثمانية نهائيًا.'
+  },
+  bulgaria: {
+    title: '🇧🇬 بلغاريا — الطمع في البلقان',
+    text: 'انضمت بلغاريا لدول المحور عام 1915 طمعًا في أراضٍ من اليونان وصربيا ورومانيا. وعدتها ألمانيا والنمسا بالحصول على مناطق مانيدونيا وتراقيا. لكن هزيمة دول المحور جعلتها تخسر المزيد في معاهدة نويي 1919.'
+  }
+};
+
+function showAllianceInfo(country) {
+  const info = allianceData[country];
+  if (!info) return;
+  const panel = document.getElementById('alliance-info');
+  panel.innerHTML = `<h4>${info.title}</h4><p>${info.text}</p>`;
+  panel.style.borderColor = 'rgba(212,160,23,0.6)';
+  panel.style.animation = 'none';
+  panel.offsetHeight;
+  panel.style.animation = 'feedbackIn 0.3s ease';
+}
+
+// ===================== TIMELINE =====================
+const events = [
+  {
+    year: '1914',
+    icon: '🔫',
+    title: 'اغتيال ولي العهد النمساوي',
+    desc: 'في 28 يونيو 1914، اغتيل الأرشيدوق فرانز فرديناند في سراييفو. هذه الشرارة فجّرت أحقادًا متراكمة ونشّطت شبكة التحالفات الأوروبية المعقدة.',
+    how: 'خرج الأرشيدوق فرانز فرديناند مع زوجته بزيارة رسمية لسراييفو. كانت هناك محاولة اغتيال فاشلة في الصباح، ثم عندما تغيّر مسار السيارة بالصدفة، كان القاتل غافريلو برينسيب في مكان الصدفة ذاته. أطلق ثلاث رصاصات قاتلة.',
+    why: 'أشعلت الاغتيال سلسلة ردود فعل لا يمكن إيقافها: النمسا أعلنت الحرب على صربيا، فردّت روسيا، ثم دخلت ألمانيا وفرنسا وبريطانيا في غضون أسابيع. الإمبراطوريات والتحالفات الأوروبية انفجرت دفعة واحدة.',
+    highlights: { battle: ['mc-serbia', 'mc-austria'], entente: [], central: [] }
+  },
+  {
+    year: '1914',
+    icon: '⚔️',
+    title: 'خطة شليفن — الهجوم عبر بلجيكا',
+    desc: 'نفّذت ألمانيا خطتها المعدّة سلفًا: عبور بلجيكا المحايدة بسرعة لسحق فرنسا، ثم التفرغ لروسيا. لكن المقاومة البلجيكية والتدخل البريطاني أربكت الخطة.',
+    how: 'صمّمت الخطة لتجنّب الحرب على جبهتين في وقت واحد. الجيش الألماني كان يتحرك عبر بلجيكا كالمطرقة، معتقدًا أن المقاومة الفرنسية ستنهار خلال 6 أسابيع.',
+    why: 'اجتياح بلجيكا المحايدة جرّ بريطانيا إلى الحرب، وحوّل الصراع إلى حرب عالمية حقيقية. انهيار الخطة عند المارن أفضى إلى حرب الخنادق الطويلة.',
+    highlights: { battle: ['mc-belgium', 'mc-germany'], entente: ['mc-france', 'mc-uk'], central: [] }
+  },
+  {
+    year: '1914',
+    icon: '🪖',
+    title: 'حرب الخنادق — المستنقع الكبير',
+    desc: 'بعد فشل الهجمات الكبرى، حفر الجنود على الجانبين شبكات خنادق امتدت من بحر الشمال إلى سويسرا. بدأت حرب استنزاف مروّعة.',
+    how: 'توقّف الجيشان وجهًا لوجه وبدآ الحفر. الخنادق الألمانية والفرنسية-البريطانية كانت تبعد أحيانًا أمتارًا قليلة. الظروف كانت مروّعة: الوحل والأمراض والقذائف المتواصلة.',
+    why: 'حرب الخنادق غيّرت وجه الحروب إلى الأبد. أثبتت أن الهجمات الأمامية تعني الفناء، وأن التكنولوجيا الدفاعية (الأسلاك الشائكة والرشاشات) تتفوّق على الهجوم الكلاسيكي.',
+    highlights: { battle: ['mc-france', 'mc-belgium'], entente: ['mc-uk'], central: ['mc-germany'] }
+  },
+  {
+    year: '1915',
+    icon: '🧪',
+    title: 'أول استخدام للأسلحة الكيميائية',
+    desc: 'في معركة إيبر الثانية، استخدمت ألمانيا الكلور للمرة الأولى في التاريخ. 168 طنًا من الغاز السام أودت بحياة الآلاف وأدخلت الحرب الكيميائية للبشرية.',
+    how: 'انتظر الألمان الريح المناسبة، ثم فتحوا 5700 أسطوانة غاز الكلور على الوقت ذاته. رأى الجنود الفرنسيون والكنديون سحابة صفراء-خضراء تزحف نحوهم ولم يعلموا ماذا تعني.',
+    why: 'فتح استخدام الأسلحة الكيميائية بابًا لا يمكن إغلاقه. ردّت دول الوفاق بتطوير أسلحتها الكيميائية. الغاز أصبح رمزًا لوحشية الحرب الحديثة وأفضى لمحادثات دولية لحظره لاحقًا.',
+    highlights: { battle: ['mc-belgium', 'mc-france'], central: ['mc-germany'], entente: [] }
+  },
+  {
+    year: '1915',
+    icon: '⚓',
+    title: 'حملة غاليبولي — الكارثة في البوسفور',
+    desc: 'حاولت بريطانيا وأستراليا ونيوزيلندا احتلال شبه جزيرة غاليبولي لفتح ممر للقسطنطينية. انتهت الحملة بكارثة عسكرية كاملة وخسارة 250,000 جندي.',
+    how: 'كانت الخطة لفتح ممر المضائق وإمداد روسيا وإضعاف الدولة العثمانية. لكن قوات مصطفى كمال أتاتورك دافعت ببسالة فائقة، والتضاريس الصعبة حوّلت الهجوم إلى مذبحة.',
+    why: 'غاليبولي رسّخت الهوية الوطنية لأستراليا ونيوزيلندا (تُحتفل بذكراها سنويًا في يوم أنزاك). وكانت نقطة تحوّل في الهوية العسكرية لتركيا، وأبرزت أتاتورك زعيمًا وطنيًا.',
+    highlights: { battle: ['mc-ottoman'], entente: ['mc-uk'], central: [] }
+  },
+  {
+    year: '1916',
+    icon: '💀',
+    title: 'معركة فردان — سنة الدم',
+    desc: 'أطول معارك الحرب وأكثرها دموية. 300 يوم من القتال المتواصل، 700,000 قتيل وجريح. الألمان أرادوا "إنهاك فرنسا حتى الموت".',
+    how: 'شنّت ألمانيا هجومًا ضخمًا على مدينة فردان الفرنسية ذات الرمزية الكبيرة، معتقدةً أن فرنسا ستُلقي بكل جيشها للدفاع عنها. كانت محقّة — لكن الثمن كان باهظًا للطرفين.',
+    why: 'فردان أصبحت رمزًا للصمود الفرنسي. أثبتت أن الحرب الاستنزافية لا تكسبها أحد. الخسائر الهائلة للطرفين زعزعت الروح المعنوية وبذرت بذور الثورات والاتفاقيات.',
+    highlights: { battle: ['mc-france', 'mc-germany'], entente: [], central: [] }
+  },
+  {
+    year: '1916',
+    icon: '🛡️',
+    title: 'الدبابة — ولادة الحرب الآلية',
+    desc: 'في معركة السوم، كشفت بريطانيا عن سلاحها السري: الدبابة. 49 دبابة ظهرت على خط المواجهة وأثارت الرعب في صفوف الألمان. كانت بداية حرب الآلة.',
+    how: 'صممت الدبابة للعبور فوق الخنادق وقطع الأسلاك الشائكة واستيعاب نيران الرشاشات. الموديلات الأولى كانت بطيئة وتتعطل كثيرًا، لكن تأثيرها النفسي كان هائلًا.',
+    why: 'غيّرت الدبابة استراتيجية الحرب إلى الأبد. أثبتت أن الخنادق لم تعد لا تُقهر، وفتحت الطريق لحروب الحركة في المستقبل. أدّت دورًا محوريًا في الحرب العالمية الثانية.',
+    highlights: { battle: ['mc-france', 'mc-belgium'], entente: ['mc-uk'], central: ['mc-germany'] }
+  },
+  {
+    year: '1917',
+    icon: '🔄',
+    title: 'الثورة الروسية — انسحاب من الحرب',
+    desc: 'أسقطت الثورة القيصر نيقولا الثاني، ووصل البلاشفة للسلطة. وقّعوا معاهدة بريست-ليتوفسك مع ألمانيا وسحبوا روسيا من الحرب في يناير 1918.',
+    how: 'أنهكت الحرب روسيا: الملايين من القتلى، ونقص في الغذاء والوقود، وانهيار الروح المعنوية. ثار الشعب في فبراير ثم أكتوبر 1917. لينين وعد بالسلام والأرض والخبز.',
+    why: 'أفرج انسحاب روسيا عن مليون جندي ألماني لنقلهم للجبهة الغربية. لكن في الوقت نفسه دخلت الولايات المتحدة الحرب بعشرات الآلاف من الجنود، فلم تستطع ألمانيا الاستفادة الكاملة.',
+    highlights: { battle: ['mc-russia'], central: ['mc-germany'], entente: [] }
+  },
+  {
+    year: '1917',
+    icon: '🦅',
+    title: 'أمريكا تدخل الحرب',
+    desc: 'أعلنت الولايات المتحدة الحرب على ألمانيا في 6 أبريل 1917. السبب المباشر: الغواصات الألمانية أغرقت السفن الأمريكية المدنية ومؤامرة زيمرمان لتحريض المكسيك.',
+    how: 'وجد الرئيس ويلسون نفسه مضطرًا للتصرف: رسالة زيمرمان السرية كُشفت بواسطة البريطانيين، والغواصات الألمانية أغرقت سفينة لوسيتانيا وعدة سفن أمريكية. الرأي العام تحوّل نحو الحرب.',
+    why: 'كان دخول أمريكا نقطة التحوّل الحاسمة. جلبت ملايين الجنود الطازجين وإمدادات ضخمة حين كانت فرنسا وبريطانيا على حافة الانهيار. هذا ما حسم الحرب لصالح دول الوفاق.',
+    highlights: { entente: ['mc-usa', 'mc-uk', 'mc-france'], central: ['mc-germany'], battle: [] }
+  },
+  {
+    year: '1918',
+    icon: '🏳️',
+    title: 'الهدنة — 11 نوفمبر 1918',
+    desc: 'في الساعة 11 صباحًا من اليوم الحادي عشر من الشهر الحادي عشر، صمتت المدافع. وقّعت ألمانيا الهدنة في عربة قطار في غابة كومبيين الفرنسية.',
+    how: 'انهار الجيش الألماني من الداخل: ثورة البحرية، انهيار الحلفاء، اقتراب الجيش الأمريكي والبريطاني من حدود ألمانيا. تنازل القيصر وهرب لهولندا، وطلبت الحكومة الجديدة الهدنة.',
+    why: 'نهاية الحرب لم تكن نهاية المعاناة. التوقيع في غابة كومبيين بدا مهينًا لكثير من الألمان — هتلر لاحقًا وصف ذلك بـ"طعنة في الظهر" لتحريض الشعب. نفس العربة استخدمها هتلر عام 1940.',
+    highlights: { entente: ['mc-france', 'mc-uk', 'mc-usa'], central: ['mc-germany', 'mc-austria', 'mc-ottoman'], battle: [] }
+  },
+  {
+    year: '1919',
+    icon: '📜',
+    title: 'معاهدة فرساي — سلام بذر الحرب',
+    desc: 'وُقّعت المعاهدة في 28 يونيو 1919 في قصر فرساي. فرضت على ألمانيا تحمّل المسؤولية الكاملة عن الحرب، ودفع تعويضات ضخمة، وخسارة أراضٍ.',
+    how: 'تفاوض الحلفاء الأربعة الكبار (فرنسا وبريطانيا وأمريكا وإيطاليا) دون حضور ألماني. طالبت فرنسا بأقصى العقوبات انتقامًا لـ1870. ووقّع الممثلون الألمان المعاهدة تحت الإكراه.',
+    why: 'أذلّت المعاهدة ألمانيا دون أن تسحقها — الوصفة المثالية للكارثة القادمة. أوجدت اقتصادًا ألمانيًا منهكًا وشعبًا غاضبًا — وهو الوقود الذي استعمله هتلر للصعود للسلطة عام 1933.',
+    highlights: { entente: ['mc-france', 'mc-uk', 'mc-usa'], central: ['mc-germany'], battle: [] }
+  }
+];
+
+let currentEventIndex = 0;
+
+function initTimeline() {
+  currentEventIndex = 0;
+  renderEvent();
+  renderProgressDots();
+}
+
+function renderEvent() {
+  const e = events[currentEventIndex];
+  document.getElementById('event-year-badge').textContent = e.year;
+  document.getElementById('event-icon').textContent = e.icon;
+  document.getElementById('event-title-text').textContent = e.title;
+  document.getElementById('event-desc').textContent = e.desc;
+
+  // Animate
+  const card = document.getElementById('event-card');
+  card.style.animation = 'none';
+  card.offsetHeight;
+  card.style.animation = 'cardSlideIn 0.4s ease';
+
+  // Update nav
+  document.getElementById('prev-btn').disabled = currentEventIndex === 0;
+  document.getElementById('next-btn').disabled = currentEventIndex === events.length - 1;
+
+  // Update map highlights
+  updateMapHighlights(e.highlights);
+  renderProgressDots();
+}
+
+function updateMapHighlights(highlights) {
+  const all = ['mc-uk','mc-france','mc-germany','mc-russia','mc-austria',
+                'mc-ottoman','mc-italy','mc-belgium','mc-serbia','mc-usa'];
+  all.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.className = el.className.replace(/highlight-\w+/g, '').trim();
+    // Find base class
+    const base = el.className.split(' ').find(c => c.startsWith('mc-'));
+    el.className = base ? `map-country ${base}` : 'map-country';
+  });
+
+  if (highlights.battle) highlights.battle.forEach(id => { const el=document.getElementById(id); if(el){el.classList.add('highlight-battle');} });
+  if (highlights.entente) highlights.entente.forEach(id => { const el=document.getElementById(id); if(el){el.classList.add('highlight-entente');} });
+  if (highlights.central) highlights.central.forEach(id => { const el=document.getElementById(id); if(el){el.classList.add('highlight-central');} });
+}
+
+function renderProgressDots() {
+  const container = document.getElementById('event-progress');
+  container.innerHTML = '';
+  events.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot' + (i === currentEventIndex ? ' active' : (i < currentEventIndex ? ' done' : ''));
+    dot.onclick = () => { currentEventIndex = i; renderEvent(); };
+    dot.title = events[i].title;
+    container.appendChild(dot);
+  });
+}
+
+function prevEvent() {
+  if (currentEventIndex > 0) { currentEventIndex--; renderEvent(); }
+}
+function nextEvent() {
+  if (currentEventIndex < events.length - 1) { currentEventIndex++; renderEvent(); }
+}
+
+function showEventHow() {
+  const e = events[currentEventIndex];
+  openModal('❓ كيف حدث؟ — ' + e.title, e.how);
+}
+function showEventWhy() {
+  const e = events[currentEventIndex];
+  openModal('⚡ لماذا كان مهمًا؟ — ' + e.title, e.why);
+}
+
+// ===================== MODAL =====================
+function openModal(title, content) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-content').textContent = content;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ===================== QUIZ =====================
+const quizData = [
+  {
+    type: 'mc',
+    question: 'من اغتاله غافريلو برينسيب في سراييفو عام 1914؟',
+    options: ['القيصر الروسي نيقولا الثاني', 'الأرشيدوق فرانز فرديناند ولي عهد النمسا', 'الإمبراطور الألماني فيلهلم الثاني', 'المارشال الفرنسي جوفر'],
+    correct: 1,
+    explanation: 'اغتيال فرانز فرديناند في 28 يونيو 1914 كان الشرارة التي أشعلت الحرب. لكن الأسباب الحقيقية كانت التحالفات المتشابكة والتوترات المتراكمة.'
+  },
+  {
+    type: 'tf',
+    question: 'استخدمت ألمانيا الغاز الكيميائي للمرة الأولى في الحرب العالمية الأولى.',
+    correct: true,
+    explanation: 'صحيح. استخدمت ألمانيا غاز الكلور في معركة إيبر الثانية عام 1915. كانت المرة الأولى في التاريخ يُستخدم فيها سلاح كيميائي على نطاق واسع في الحرب.'
+  },
+  {
+    type: 'mc',
+    question: 'أي عام انضمت الولايات المتحدة رسميًا للحرب إلى جانب دول الوفاق؟',
+    options: ['1914', '1915', '1916', '1917'],
+    correct: 3,
+    explanation: 'أعلنت الولايات المتحدة الحرب على ألمانيا في أبريل 1917 بعد أزمة الغواصات ومؤامرة زيمرمان. كان دخولها نقطة التحوّل الحاسمة في الحرب.'
+  },
+  {
+    type: 'tf',
+    question: 'دخلت إيطاليا الحرب منذ البداية عام 1914 إلى جانب دول المحور.',
+    correct: false,
+    explanation: 'خطأ. رغم كون إيطاليا عضوًا في التحالف الثلاثي مع ألمانيا والنمسا، قرّرت البقاء محايدة أولًا، ثم انضمت لدول الوفاق عام 1915 مقابل وعود إقليمية.'
+  },
+  {
+    type: 'mc',
+    question: 'أين وُقّعت معاهدة الهدنة في نوفمبر 1918؟',
+    options: ['باريس - قصر إليزيه', 'لندن - قصر بكنغهام', 'غابة كومبيين في فرنسا - عربة قطار', 'برلين - قصر الرايخ'],
+    correct: 2,
+    explanation: 'وُقّعت الهدنة في عربة قطار وسط غابة كومبيين الفرنسية في الساعة 11 صباحًا يوم 11 نوفمبر 1918. هذا المكان بالذات أحرقه هتلر لاحقًا إهانةً للفرنسيين.'
+  },
+  {
+    type: 'tf',
+    question: 'كانت معركة فردان أقصر معارك الحرب العالمية الأولى.',
+    correct: false,
+    explanation: 'خطأ. معركة فردان كانت الأطول والأشرس. استمرت 300 يوم (فبراير إلى ديسمبر 1916) وخلّفت نحو 700,000 قتيل وجريح بين الطرفين.'
+  },
+  {
+    type: 'mc',
+    question: 'ماذا فرضت معاهدة فرساي 1919 على ألمانيا؟',
+    options: ['لا شيء تقريبًا، كانت معاهدة عادلة', 'تعويضات ضخمة وتقليص جيشها وخسارة أراضٍ', 'فقط الاعتذار الرسمي عن الحرب', 'إعادة الأراضي المحتلة فقط'],
+    correct: 1,
+    explanation: 'فرضت المعاهدة على ألمانيا تحمّل كامل المسؤولية عن الحرب، ودفع 132 مليار مارك ذهبي، وتسليم أراضٍ وتقليص جيشها. هذا الإذلال مهّد لصعود هتلر.'
+  },
+  {
+    type: 'mc',
+    question: 'ما السبب الرئيسي لخروج روسيا من الحرب عام 1917؟',
+    options: ['هزيمة عسكرية كاملة على الجبهة', 'الثورة الشيوعية ووصول لينين للسلطة', 'اتفاقية سرية مع ألمانيا', 'وفاة القيصر نيقولا'],
+    correct: 1,
+    explanation: 'أطاحت الثورة البلشفية بالقيصر، ووصل لينين للسلطة بعد أن وعد الشعب المنهك بالسلام. وقّع مع ألمانيا معاهدة بريست-ليتوفسك في مارس 1918 وسحب روسيا من الحرب.'
+  }
+];
+
+let quizIndex = 0;
+let quizScore = 0;
+let quizAnswered = false;
+
+function initQuiz() {
+  quizIndex = 0;
+  quizScore = 0;
+  quizAnswered = false;
+  document.getElementById('quiz-result-area').style.display = 'none';
+  document.getElementById('quiz-question-area').style.display = 'block';
+  document.getElementById('quiz-total').textContent = quizData.length;
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  if (quizIndex >= quizData.length) {
+    showQuizResult();
+    return;
+  }
+  const q = quizData[quizIndex];
+  quizAnswered = false;
+  document.getElementById('quiz-current').textContent = quizIndex + 1;
+  document.getElementById('quiz-score').textContent = quizScore;
+
+  let html = `
+    <div class="quiz-card">
+      <div class="quiz-type-badge ${q.type === 'tf' ? 'badge-tf' : 'badge-mc'}">
+        ${q.type === 'tf' ? '✓✗ صح أم خطأ' : '🎯 اختيار من متعدد'}
+      </div>
+      <div class="quiz-question">${q.question}</div>`;
+
+  if (q.type === 'tf') {
+    html += `
+      <div class="quiz-tf-buttons">
+        <button class="btn-true" onclick="answerTF(true)">✅ صحيح</button>
+        <button class="btn-false" onclick="answerTF(false)">❌ خطأ</button>
+      </div>`;
+  } else {
+    html += `<div class="quiz-options">`;
+    q.options.forEach((opt, i) => {
+      html += `<button class="quiz-option" onclick="answerMC(${i})">${opt}</button>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+    </div>
+    <div style="text-align:center;margin-top:10px;">
+      <button class="btn-primary" id="quiz-next-btn" onclick="nextQuizQuestion()" style="display:none;">
+        ${quizIndex === quizData.length - 1 ? '🏁 إظهار النتيجة' : 'السؤال التالي ←'}
+      </button>
+    </div>`;
+
+  document.getElementById('quiz-question-area').innerHTML = html;
+}
+
+function answerTF(answer) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizData[quizIndex];
+  const isCorrect = answer === q.correct;
+  if (isCorrect) quizScore++;
+  showQuizFeedback(isCorrect, q.explanation);
+  disableTFButtons();
+}
+
+function answerMC(index) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizData[quizIndex];
+  const isCorrect = index === q.correct;
+  if (isCorrect) quizScore++;
+  document.querySelectorAll('.quiz-option').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === index && !isCorrect) btn.classList.add('wrong');
+  });
+  showQuizFeedback(isCorrect, q.explanation);
+}
+
+function disableTFButtons() {
+  document.querySelectorAll('.btn-true, .btn-false').forEach(b => { b.disabled = true; b.style.opacity = 0.6; });
+}
+
+function showQuizFeedback(isCorrect, explanation) {
+  document.getElementById('quiz-score').textContent = quizScore;
+  const fb = document.getElementById('quiz-feedback');
+  fb.className = `quiz-feedback show ${isCorrect ? 'correct-fb' : 'wrong-fb'}`;
+  fb.innerHTML = `<strong>${isCorrect ? '✅ إجابة صحيحة!' : '❌ إجابة خاطئة!'}</strong><br>${explanation}`;
+  const nextBtn = document.getElementById('quiz-next-btn');
+  if (nextBtn) nextBtn.style.display = 'inline-block';
+}
+
+function nextQuizQuestion() {
+  quizIndex++;
+  renderQuizQuestion();
+}
+
+function showQuizResult() {
+  document.getElementById('quiz-question-area').style.display = 'none';
+  const res = document.getElementById('quiz-result-area');
+  res.style.display = 'block';
+  const pct = Math.round((quizScore / quizData.length) * 100);
+  let emoji = pct >= 80 ? '🏆' : pct >= 60 ? '⭐' : pct >= 40 ? '📚' : '😅';
+  let msg = pct >= 80 ? 'ممتاز! أنت مؤرّخ بالفطرة!' : pct >= 60 ? 'جيد جدًا! أنت على الطريق الصحيح' : pct >= 40 ? 'لا بأس، راجع الأحداث وحاول مجددًا' : 'راجع الدروس وستتحسّن كثيرًا!';
+  res.innerHTML = `
+    <div class="quiz-result">
+      <span class="result-emoji">${emoji}</span>
+      <div class="result-title">${msg}</div>
+      <span class="result-score">${quizScore} / ${quizData.length}</span>
+      <p style="color:var(--smoke);margin-bottom:20px;">حصلت على ${pct}% من الإجابات الصحيحة</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="initQuiz()">🔄 إعادة الاختبار</button>
+        <button class="btn-gold" onclick="goToScene('scene-decision')">🎮 لعبة القرار</button>
+      </div>
+    </div>`;
+}
+
+// ===================== DECISION MAKER =====================
+const decisions = [
+  {
+    year: '1914',
+    context: 'الأرشيدوق فرانز فرديناند اغتيل للتو. أنت رئيس وزراء النمسا-المجر. المستشارون ينتظرون قرارك.',
+    question: '🤔 ماذا تفعل تجاه صربيا؟',
+    options: [
+      { title: '⚔️ إعلان الحرب فورًا', hint: 'الانتقام السريع والحاسم' },
+      { title: '🕊️ الحل الدبلوماسي', hint: 'مفاوضات ومحاكمة القتلة' },
+      { title: '⏸️ الانتظار والرصد', hint: 'تجنّب التصعيد الآن' }
+    ],
+    outcomes: [
+      { title: 'نشبت الحرب!', text: 'قرارك بإعلان الحرب فعّل سلسلة التحالفات. روسيا حشدت جيشها، ألمانيا أعلنت الحرب، ثم فرنسا وبريطانيا. خلال أسابيع احترق العالم.', note: '<strong>تاريخيًا:</strong> هذا ما فعله النمساويون فعلًا — وهذا ما أشعل الحرب العالمية.' },
+      { title: 'نجوت من الحرب مؤقتًا', text: 'نجحت المفاوضات في تهدئة الأزمة الآنية. لكن التوترات الكامنة بقيت. المحلّلون يقولون إن الحرب كانت لتندلع بطريقة أخرى خلال سنوات.', note: '<strong>تاريخيًا:</strong> كان هناك من دعا للحوار، لكن "صقور الحرب" كانوا أكثر نفوذًا في الحكومة النمساوية.' },
+      { title: 'الفرصة ضاعت', text: 'انتهزت ألمانيا فرصة تأخّرك وضغطت على النمسا للتحرك. في النهاية اندلعت الحرب، لكن النمسا بدت ضعيفة وغير حاسمة أمام حليفتها الألمانية.', note: '<strong>درس تاريخي:</strong> في السياسة الدولية، التردد أحيانًا يُفقدك السيطرة على الأحداث.' }
+    ]
+  },
+  {
+    year: '1917',
+    context: 'روسيا خرجت من الحرب. الجيش الأمريكي يصل بالآلاف. الجيش الألماني منهك. أنت المستشار الألماني.',
+    question: '🤔 ما قرارك الآن؟',
+    options: [
+      { title: '🕊️ طلب الهدنة فورًا', hint: 'إنهاء الحرب بشروط معقولة' },
+      { title: '💪 الهجوم الكبير الأخير', hint: 'ضرب قوي قبل وصول الأمريكيين' },
+      { title: '🤝 التفاوض مع فرنسا سرًا', hint: 'اتفاقية سلام منفردة' }
+    ],
+    outcomes: [
+      { title: 'سلام مبكر!', text: 'قبل الحلفاء الهدنة بشروط أفضل من تلك التي فُرضت لاحقًا. ألمانيا حافظت على بعض كرامتها. التاريخ كان يمكن أن يكون مختلفًا تمامًا.', note: '<strong>تاريخيًا:</strong> لم يحدث هذا. القيادة العسكرية الألمانية رفضت الاعتراف بالهزيمة، مما أدى لمعاهدة فرساي المذلّة.' },
+      { title: 'الهجوم فشل!', text: 'عملية "مايكل" الكبرى نجحت في البداية لكن نفد البخار. الأمريكيون وصلوا بعشرات الآلاف. الهجوم الألماني تحوّل إلى انهيار تام.', note: '<strong>تاريخيًا:</strong> هذا ما حدث فعلًا. هجوم مارس 1918 نجح جزئيًا ثم انهار، وانتهت الحرب في نوفمبر.' },
+      { title: 'المفاوضات السرية فشلت', text: 'اكتشفت بريطانيا التفاوض السري وضغطت على فرنسا لرفضه. تصدّعت الثقة بين دول الوفاق لكنها بقيت متحدة. الحرب استمرت أشهرًا إضافية.', note: '<strong>درس دبلوماسي:</strong> الأسرار في الحرب نادرًا ما تبقى سرية.' }
+    ]
+  },
+  {
+    year: '1919',
+    context: 'الحرب انتهت. أنت الرئيس الأمريكي ويلسون في مفاوضات معاهدة فرساي. فرنسا تريد معاقبة ألمانيا بقسوة.',
+    question: '🤔 كيف تتعامل مع ألمانيا المهزومة؟',
+    options: [
+      { title: '⚖️ سلام عادل كما وعدت', hint: 'تطبيق نقاطك الـ14 الإصلاحية' },
+      { title: '💰 إذلال ألمانيا كليًا', hint: 'دعم الفرنسيين في العقوبات القصوى' },
+      { title: '🌱 إعادة بناء ألمانيا', hint: 'مساعدتها اقتصاديًا للاستقرار' }
+    ],
+    outcomes: [
+      { title: 'سلام عادل... نظريًا', text: 'حاولت تطبيق مبادئك لكن الفرنسيين والبريطانيين رفضوا معظمها. في النهاية قبلت بتنازلات كبيرة. ألمانيا عوقبت لكن بشكل أقل قسوة.', note: '<strong>تاريخيًا:</strong> هذا ما أراده ويلسون لكنه فشل. نقاطه الـ14 أُهملت معظمها في المفاوضات الفعلية.' },
+      { title: 'الإذلال الكامل... والكارثة القادمة', text: 'قبلت بالعقوبات القصوى. ألمانيا دفعت الثمن ولكن... الغضب الشعبي والاقتصاد المنهار أوجدوا الأرضية المثالية لشخص مثل هتلر. كنتَ تزرع بذور الحرب الثانية.', note: '<strong>تاريخيًا:</strong> هذا ما حدث فعلًا. معاهدة فرساي المذلّة كانت من أهم أسباب صعود النازية وبالتالي الحرب العالمية الثانية.' },
+      { title: 'رؤية المستقبل', text: 'ساعدتَ في إعادة بناء ألمانيا اقتصاديًا بدلًا من إذلالها. الاستقرار الاقتصادي حال دون صعود التطرف. ألمانيا تعافت وأصبحت ديمقراطية مستقرة.', note: '<strong>درس تاريخي:</strong> هذا ما فعلته أمريكا بعد الحرب العالمية الثانية بمشروع مارشال — فنجحت حيث فشلت عام 1919!' }
+    ]
+  }
+];
+
+let decisionIndex = 0;
+let decisionAnswered = false;
+
+function initDecision() {
+  decisionIndex = 0;
+  decisionAnswered = false;
+  renderDecision();
+}
+
+function renderDecision() {
+  const d = decisions[decisionIndex];
+  decisionAnswered = false;
+  document.getElementById('decision-outcome-area').classList.remove('show');
+  document.getElementById('decision-outcome-area').style.display = 'none';
+
+  let html = `
+    <div class="decision-scenario">
+      <div class="event-year-badge">${d.year}</div>
+      <div class="scenario-context">📍 ${d.context}</div>
+      <div class="scenario-question">${d.question}</div>
+      <div class="decision-options">`;
+
+  d.options.forEach((opt, i) => {
+    html += `
+      <div class="decision-option" onclick="makeDecision(${i})">
+        <div class="decision-option-title">${opt.title}</div>
+        <div class="decision-option-hint">${opt.hint}</div>
+      </div>`;
+  });
+
+  html += `</div></div>`;
+  document.getElementById('decision-scenario-area').innerHTML = html;
+
+  // Nav buttons
+  document.getElementById('decision-prev').style.display = decisionIndex > 0 ? 'inline-block' : 'none';
+  document.getElementById('decision-next').style.display = 'none';
+  document.getElementById('decision-restart').style.display = 'none';
+}
+
+function makeDecision(index) {
+  if (decisionAnswered) return;
+  decisionAnswered = true;
+  const d = decisions[decisionIndex];
+  const outcome = d.outcomes[index];
+
+  // Disable options
+  document.querySelectorAll('.decision-option').forEach((el, i) => {
+    el.style.opacity = i === index ? '1' : '0.4';
+    el.style.pointerEvents = 'none';
+    if (i === index) {
+      el.style.borderColor = 'var(--gold)';
+      el.style.background = 'linear-gradient(135deg, rgba(212,160,23,0.2), rgba(212,160,23,0.1))';
+    }
+  });
+
+  // Show outcome
+  const outcomeArea = document.getElementById('decision-outcome-area');
+  outcomeArea.style.display = 'block';
+  outcomeArea.innerHTML = `
+    <div class="outcome-title">📖 ${outcome.title}</div>
+    <div class="outcome-text">${outcome.text}</div>
+    <div class="historical-note">🏛️ ${outcome.note}</div>`;
+  outcomeArea.classList.add('show');
+
+  // Nav
+  if (decisionIndex < decisions.length - 1) {
+    document.getElementById('decision-next').style.display = 'inline-block';
+  } else {
+    document.getElementById('decision-restart').style.display = 'inline-block';
+  }
+}
+
+function nextDecision() {
+  if (decisionIndex < decisions.length - 1) {
+    decisionIndex++;
+    renderDecision();
+    document.getElementById('decision-outcome-area').classList.remove('show');
+    document.getElementById('decision-outcome-area').style.display = 'none';
+  }
+}
+
+function prevDecision() {
+  if (decisionIndex > 0) {
+    decisionIndex--;
+    renderDecision();
+  }
+}
+
+function restartDecision() {
+  decisionIndex = 0;
+  initDecision();
+}
+
+// ===================== KEYBOARD NAVIGATION =====================
+document.addEventListener('keydown', function(e) {
+  if (currentScene === 'scene-timeline') {
+    if (e.key === 'ArrowRight') prevEvent();
+    if (e.key === 'ArrowLeft') nextEvent();
+  }
+});
+</script>
+</body>
+</html>
